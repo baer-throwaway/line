@@ -212,3 +212,350 @@ models:
         description: "A unique identifier for each set of parameters. IDs can be found in the parameter_set table."
         tests:
           - not_null
+
+  - name: stg_program
+    description: "This is the main table for programs in DSIRE. It pulls from multiple tables to build program entries in the database."
+    columns:
+      - name: id
+        description: "Unique Id for each individual policy/incentive in DSIRE. This number is also located at the end of the URLs for each program entry."
+        tests:
+          - not_null
+          - unique
+
+      - name: state_id
+        description: "Indicates the state in which this program is available. State IDs can be found in the state table."
+        tests:
+          - not_null
+
+      - name: is_entire_state
+        description: "This is used by the zip code table to indicate that an incentive is available in all zip codes in a state."
+
+      - name: implementing_sector_id
+        description: "Indicates the sector that administers this program. Implementing sector IDs can be found in the implementing_sector table."
+
+      - name: program_category_id
+        description: "Indicates whether the program is an incentive or a regulatory policy. Program category IDs can be found in the program_category table."
+
+      - name: program_type_id
+        description: "Indicates the type of program (rebate, tax credit, renewable portfolio standard, etc). Program type IDs can be found in the program_type table."
+
+      - name: created_by_user_id
+        description: "Indicates the DSIRE staff member who created the entry."
+
+      - name: code
+        description: "Legacy incentive/policy IDs from old DSIRE."
+
+      - name: name
+        description: "The name of the policy or incentive."
+
+      - name: updated_ts
+        description: "Date for when the entry was last reviewed and updated by a DSIRE staff member."
+
+      - name: created_ts
+        description: "Date for when the entry was first created by a DSIRE staff member."
+
+      - name: published
+        description: "Indicates whether or not the entry appears on the public site. '1' indicates that the program is visible on the public side of DSIRE, thus currently available. '0' indicates that the program is hidden from the public site, and thus, not available."
+
+      - name: websiteurl
+        description: "Source page for the program, where users can go for more details."
+
+      - name: administrator
+        description: "Name of the company, organization, etc that administers the program."
+
+      - name: fundingsource
+        description: "When available, indicates where the funding for a program comes from."
+
+      - name: budget
+        description: "When available, indicates the total funding for a program."
+
+      - name: start_date
+        description: "Date field that indicates when the program started."
+
+      - name: start_date_text
+        description: "Text that may be needed to explain the start date."
+
+      - name: end_date
+        description: "Date field that indicates when the program will end."
+
+      - name: end_date_text
+        description: "Text that may be needed to explain the end date."
+
+      - name: summary
+        description: "Narrative summary of the policy/incentive. Text includes HTML code."
+
+      - name: additional_technologies
+        description: "Text field that captures any one-off technologies that are eligible for a certain policy/incentive, but are not included in the technology table."
+
+  - name: stg_program_category
+    description: "All programs in DSIRE are either financial incentives or regulatory policies. This table provides a unique identifier to indicate whether a program is a financial incentive or a regulatory policy."
+    columns:
+      - name: id
+        description: "A unique identifier to indicate whether a program is a financial incentive or a regulatory policy."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_program_city
+    description: "Match table used in assigning zip codes to programs. Pulls from Program table and City table. Matches specific programs with the zip codes located within specific cities."
+    columns:
+      - name: program_id
+        description: "A unique identifier for each policy/incentive in DSIRE. Program IDs can be found in the Program table."
+        tests:
+          - not_null
+
+      - name: city_id
+        description: "A unique identifier for each city. City IDs can be found in the City table."
+        tests:
+          - not_null
+
+  - name: stg_program_contact
+    description: "Match table used to assign contacts to programs. Pulls from Program table and Contact table."
+    columns:
+      - name: id
+        description: "A unique identifier for each combination of contacts and programs."
+        tests:
+          - not_null
+          - unique
+      - name: program_id
+        description: "A unique identifier for specific programs. Pulls from Program table."
+        tests:
+          - not_null
+      - name: contact_id
+        description: "A unique identifier for each contact. Contact IDs can be found in the Contact table."
+        tests:
+          - not_null
+      - name: webvisible
+        description: "Some contacts are only viewable to DSIRE staff. '1' in this field indicates that the contact is visible to the public."
+
+  - name: stg_program_county
+    description: "Match table used in assigning zip codes to programs. Pulls from Program table and County table. Matches specific programs with the zip codes located within specific counties."
+    columns:
+      - name: program_id
+        description: "A unique identifier for each policy/incentive in DSIRE. Program IDs can be found in the Program table."
+        tests:
+          - not_null
+      - name: county_id
+        description: "A unique identifier for each county. County IDs can be found in the County table."
+        tests:
+          - not_null
+
+  - name: stg_program_detail
+    description: "'Program details' are found towards the top of every DSIRE entry, under 'Program Overview'. Different program types include different program details. This table provides the content of the program details for every entry in DSIRE."
+    columns:
+      - name: id
+        description: "A unique identifier for every combination of program IDs and corresponding program detail."
+        tests:
+          - not_null
+          - unique
+      - name: program_id
+        description: "Pulled from Program file. Each program in DSIRE has a unique identifier. Program_id in this file indicates the program in DSIRE that is associated with the program detail id."
+        tests:
+          - not_null
+      - name: label
+        description: "Name of the Program Detail."
+      - name: value
+        description: "Content for the corresponding program detail label for that program ID."
+      - name: display_order
+        description: "Order in which the program details are displayed in a DSIRE entry."
+      - name: template_id
+        description: "Pulled from program_detail_template table. An identifier that matches program types to program detail labels."
+
+  - name: stg_program_detail_template
+    description: "Program details are found towards the top of every DSIRE entry, under 'Program Overview'. Different program types include different program details. This table matches program types with details fields (labels)."
+    columns:
+      - name: id
+        description: "A unique identifier for matching program types with program details (labels)."
+        tests:
+          - not_null
+          - unique
+      - name: type_id
+        description: "A unique identifier for each type of program in DSIRE. Pulled from program_type table."
+        tests:
+          - not_null
+      - name: label
+        description: "Name of the Program Detail."
+      - name: display_order
+        description: "Order in which the program details are displayed in a DSIRE entry."
+
+  - name: stg_program_sector
+    description: "Match table used in matching eligible sectors to specific programs. Eligible sector are the types of people or entities (residential, commercial, etc.) that are eligible for a particular incentive/policy. Pulls from program table and sector table."
+    columns:
+      - name: program_id
+        description: "A unique identifier for each policy/incentive in DSIRE. Program IDs can be found in the Program table."
+        tests:
+          - not_null
+      - name: sector_id
+        description: "A unique identifier for each eligible sector found in DSIRE. Pulled from sector table."
+        tests:
+          - not_null
+
+  - name: stg_program_technology
+    description: "Match table used in matching eligible technologies to specific programs. Pulls from program table and technology table."
+    columns:
+      - name: program_id
+        description: "A unique identifier for each policy/incentive in DSIRE. Program IDs can be found in the Program table."
+        tests:
+          - not_null
+      - name: technology_id
+        description: "A unique identifier for each eligible technology found in DSIRE. Pulled from technology table."
+        tests:
+          - not_null
+
+  - name: stg_program_type
+    description: "Program type refers to the types of policies or incentives included in DSIRE (rebate, tax credit, renewable portfolio standard, etc)."
+    columns:
+      - name: id
+        description: "A unique identifier for every type of policy/incentive in DSIRE."
+        tests:
+          - not_null
+          - unique
+      - name: program_category_id
+        description: "Indicates whether the program is an incentive or a regulatory policy. Program category IDs can be found in the program_category table."
+        tests:
+          - not_null
+
+  - name: stg_program_utility
+    description: "Match table used in assigning zip codes to programs. Pulls from Program table and utility table. Matches specific programs with the zip codes associated with specific utilities."
+    columns:
+      - name: program_id
+        description: "A unique identifier for each policy/incentive in DSIRE. Program IDs can be found in the Program table."
+        tests:
+          - not_null
+      - name: utility_id
+        description: "A unique identifier for each utility. Utility IDs can be found in the utility table."
+        tests:
+          - not_null
+
+  - name: stg_program_zipcode
+    description: "Match table used to match program IDs with zipcode ID. Pulls from zipcode table and program table."
+    columns:
+      - name: program_id
+        description: "A unique identifier for each policy/incentive in DSIRE. Program IDs can be found in the Program table."
+        tests:
+          - not_null
+      - name: zipcode_id
+        description: "A unique identifier for each zip code."
+        tests:
+          - not_null
+
+  - name: stg_sector
+    description: "Includes all sectors that can be eligible for an incentive or policy."
+    columns:
+      - name: id
+        description: "A unique identifier for each eligible sector."
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Name of the eligible sector as it is displayed on the public site."
+      - name: fieldname
+        description: "Name of the eligible sector as it is logged in the database."
+      - name: is_selectable
+        description: "Determines whether or not this sector is active in DSIRE. 1 = active; 0 = not active."
+      - name: parent_id
+        description: "Used for grouping similar sector types."
+
+  - name: stg_state
+    description: "Table of states and territories."
+    columns:
+      - name: id
+        description: "A unique identifier for each state/territory."
+        tests:
+          - not_null
+          - unique
+      - name: abbreviation
+        description: "Postal abbreviation."
+      - name: name
+        description: "State name."
+      - name: is_territory
+        description: "Indicates if it is a territory (1) or not (0)."
+
+  - name: stg_subscription_memo
+    description: "DSIRE analysts use this field to provide a short summary of changes whenever a policy or incentive is updated."
+    columns:
+      - name: id
+        description: "A unique identifier for each subscription memo entry."
+        tests:
+          - not_null
+          - unique
+      - name: program_id
+        description: "Indicates the program in DSIRE that is associated with the subscription memo."
+        tests:
+          - not_null
+      - name: added_by_user
+        description: "Identifier for the DSIRE analyst who added the memo."
+      - name: added
+        description: "Timestamp for when the memo was added."
+      - name: memo
+        description: "Content of the memo; description of what changed with the policy/incentive."
+
+  - name: stg_technology
+    description: "Table of renewable energy and energy efficiency technology types contained in DSIRE."
+    columns:
+      - name: id
+        description: "A unique identifier for every technology type."
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Name of the technology."
+      - name: technology_category_id
+        description: "Indicates the parent technology for the specific technology type."
+      - name: active
+        description: "Indicates whether the technology is currently being used by DSIRE. 1 = yes; 0 = No, legacy technology no longer within the scope of DSIRE."
+
+  - name: stg_technology_category
+    description: "All technologies in DSIRE are organized under parent technologies for easier sorting."
+    columns:
+      - name: id
+        description: "A unique identifier for technology categories."
+        tests:
+          - not_null
+          - unique
+      - name: energy_category_id
+        description: "A unique identifier to indicate whether a technology is a renewable energy or energy efficiency technology."
+
+  - name: stg_utility
+    description: "Table of utilities."
+    columns:
+      - name: id
+        description: "A unique identifier for each utility, which is used by DSIRE."
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Utility name."
+      - name: state_id
+        description: "A unique identifier for every state/territory."
+      - name: utility_id
+        description: "Different than column A. This is the Utility ID used by EIA."
+
+  - name: stg_utility_zipcode
+    description: "Assigns zip codes to utilities."
+    columns:
+      - name: utility_id
+        description: "A unique identifier for each utility."
+        tests:
+          - not_null
+      - name: zipcode_id
+        description: "A unique identifier for every zipcode."
+        tests:
+          - not_null
+
+  - name: stg_zipcode
+    description: "All policies/incentives in DSIRE are associated with zipcodes. This table is used to assign an id to every zipcode and to identify where those zip codes are located."
+    columns:
+      - name: id
+        description: "A unique identifier for every zipcode."
+        tests:
+          - not_null
+          - unique
+      - name: zipcode
+        description: "Actual zip code. Leading zeros have been removed from zipcodes that start with one or more zeros."
+      - name: city_id
+        description: "A unique identifier for each city. Used here to indicate which city the zipcode is located within."
+      - name: state_id
+        description: "A unique identifier for each state. Used here to indicate which state the zipcode is located within."
+      - name: county_id
+        description: "A unique identifier for each county. Used here to indicate which county the zipcode is located within."
