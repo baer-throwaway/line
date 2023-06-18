@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_authority
+    description: "Authorities are the legislation, administrative code, commission rulings or other policy documentation which are related to a specific policy/incentive in DSIRE. This table includes every Authority found in DSIRE. Not all entries in DSIRE have authorities associated with them."
+    columns:
+      - name: id
+        description: "A unique identifier for each authority found in DSIRE."
+        tests:
+          - not_null
+          - unique
+
+      - name: program_id
+        description: "Pulled from Program file. Each program in DSIRE has a unique identifier. Program_id in this file indicates the program in DSIRE that is associated with the authority."
+        tests:
+          - not_null
+
+      - name: order
+        description: "The order in which the authority appears within the hierarchy of authorities for a particular policy/incentive."
+        tests:
+          - not_null
+
+      - name: code
+        description: "The statutory reference, bill number, commission ruling, etc."
+        tests:
+          - not_null
+
+      - name: website
+        description: "Link to the legislation, commission ruling, etc."
+
+      - name: enacted
+        description: "Date the legislation, regulation, etc. was first enacted."
+
+      - name: enactedtext
+        description: "Text that may be needed to explain the enacted date, i.e. 'subsequently amended'. During data migration from the old version of DSIRE, the new system did not recognize some of our dates, and imported them into this field. We will be moving dates from this field to the enacted field as we update each individual program."
+
+      - name: effective
+        description: "Effective date for the legislation, regulation, etc."
+
+      - name: effectivetext
+        description: "Text that may be needed to explain the effective date. During data migration from the old version of DSIRE, the new system did not recognize some of our dates, and imported them into this field. We will be moving dates from this field to the effective field as we update each individual program."
+
+      - name: expired
+        description: "Date the legislation, regulation, etc. expires."
+
+      - name: expiredtext
+        description: "Text that may be needed to explain the expiration date. During data migration from the old version of DSIRE, the new system did not recognize some of our dates, and imported them into this field. We will be moving dates from this field to the expired field as we update each individual program."
+
+      - name: file_key
+        description: "Legacy data. Null."
+
+      - name: file_name
+        description: "Legacy data. Null."
