@@ -140,3 +140,75 @@ models:
         tests:
           - not_null
           - unique
+
+  - name: stg_implementing_sector
+    description: "Implementing sector indicates the type of organization that administers a certain policy or incentive, i.e. state, utility, local, federal, non-profit."
+    columns:
+      - name: id
+        description: "A unique identifier for each implementing sector."
+        tests:
+          - not_null
+          - unique
+
+      - name: name
+        description: "Name of the implementing sector."
+        tests:
+          - not_null
+
+      - name: active
+        description: "'1' indicates that the particular implementing sector is still within the scope of DSIRE. '0' indicates that the particular implementing sector is not used in DSIRE."
+        tests:
+          - not_null
+
+  - name: stg_parameter
+    description: "DSIRE captures quantitative machine-readable data for the following program types: rebates, corporate tax credits, personal tax credits, performance-based incentives, feed-in tariffs. Within a specific program, these incentive parameters may vary by eligible sector and system size. The parameters include eligible technologies, eligible sectors, incentive value, incentive units, max and min incentive, minimum and maximum system size."
+    columns:
+      - name: id
+        description: "A unique identifier for each incentive parameter."
+        tests:
+          - not_null
+          - unique
+
+      - name: parameter_set_id
+        description: "A unique identifier for each set of parameters."
+        tests:
+          - not_null
+
+      - name: source
+        description: "Either 'Incentive' or 'System'. 'Incentive' indicates that the values for that parameter are describing the incentive amount. 'System' indicates that the values for that parameter are describing the system, e.g. Maximum PV system size for that incentive."
+
+      - name: qualifier
+        description: "Either 'max', 'min' or blank. Descriptor for the parameter source. Could indicate that the parameter represents the maximum or minimum system size or the maximum or minimum incentive amount."
+
+      - name: amount
+        description: "Numerical value for the system or incentive."
+
+      - name: units
+        description: "Units for the amount."
+
+  - name: stg_parameter_set
+    description: "Table that matches Parameter sets to specific programs. A parameter set consists of a technology and eligible sector pairing, with at least an incentive amount, and where applicable, system size data and max/min incentive. A single program may have multiple parameter sets."
+    columns:
+      - name: id
+        description: "A unique identifier for each parameter set. Parameter set details are found in the parameter table."
+        tests:
+          - not_null
+          - unique
+
+      - name: program_id
+        description: "A unique identifier for each program in DSIRE. Used here to indicate which program contains each parameter set."
+        tests:
+          - not_null
+
+  - name: stg_parameter_set_technology
+    description: "Table that matches parameter sets with eligible technologies."
+    columns:
+      - name: technology_id
+        description: "A unique identifier for each eligible technology. IDs can be found in the technology table."
+        tests:
+          - not_null
+
+      - name: set_id
+        description: "A unique identifier for each set of parameters. IDs can be found in the parameter_set table."
+        tests:
+          - not_null
