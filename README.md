@@ -1,6 +1,6 @@
 ### What's in this repo?
 
-This repo contains [seeds](https://docs.getdbt.com/docs/building-a-dbt-project/seeds) with raw data from [DSIRE](https://www.dsireusa.org/resources/data-and-tools/)
+This repo contains [seeds](https://docs.getdbt.com/docs/building-a-dbt-project/seeds) with raw data from [DSIRE](https://www.dsireusa.org/resources/data-and-tools/). The schema definition comes from their [Databse Archive README](https://www.dsireusa.org/resources/database-archives/)
 
 ### Running this project
 
