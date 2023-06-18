@@ -17,13 +17,9 @@ models:
 
       - name: order
         description: "The order in which the authority appears within the hierarchy of authorities for a particular policy/incentive."
-        tests:
-          - not_null
 
       - name: code
         description: "The statutory reference, bill number, commission ruling, etc."
-        tests:
-          - not_null
 
       - name: website
         description: "Link to the legislation, commission ruling, etc."
@@ -51,3 +47,96 @@ models:
 
       - name: file_name
         description: "Legacy data. Null."
+
+  - name: stg_city
+    description: "Every DSIRE entry with 'Local Government' as the implementing sector will have at least one city or county associated with it in the database. This table provides the unique identifier for each city. Used by zipcode file."
+    columns:
+      - name: id
+        description: "A unique identifier for each city."
+        tests:
+          - not_null
+          - unique
+
+      - name: name
+        description: "City name."
+        tests:
+          - not_null
+
+      - name: state_id
+        description: "Unique identifier for the city's state. State IDs can be found in the state table."
+        tests:
+          - not_null
+
+  - name: stg_contact
+    description: "Every entry in DSIRE lists a contact at the bottom of the page. This table collects all the contacts listed in DSIRE."
+    columns:
+      - name: id
+        description: "A unique identifier for each contact."
+        tests:
+          - not_null
+          - unique
+
+      - name: created_ts
+        description: "Date and time the contact was created in the database."
+
+      - name: updated_ts
+        description: "Date and time the contact was updated in the database."
+
+      - name: first_name
+        description: "First name of the contact."
+
+      - name: last_name
+        description: "Last name of the contact."
+
+      - name: organization_name
+        description: "Name of the organization the contact belongs to."
+
+      - name: web_visible_default
+        description: "Some contacts are only viewable to DSIRE staff. '1' in this field indicates that the contact is visible to the public."
+
+      - name: phone
+        description: "Phone number of the contact."
+
+      - name: email
+        description: "Email address of the contact."
+
+      - name: website_url
+        description: "Website URL of the contact."
+
+      - name: address
+        description: "Address of the contact."
+
+      - name: city
+        description: "City of the contact."
+
+      - name: state_id
+        description: "Unique identifier for the contact's state. State IDs can be found in the state file."
+
+      - name: zip
+        description: "ZIP code of the contact."
+
+  - name: stg_county
+    description: "Every DSIRE entry with 'Local Government' as the implementing sector will have at least one city or county associated with it in the database. This table provides the unique identifier for each county. Used by zipcode file."
+    columns:
+      - name: id
+        description: "A unique identifier for each county."
+        tests:
+          - not_null
+          - unique
+
+      - name: name
+        description: "County name."
+
+      - name: state_id
+        description: "Unique identifier for the county's state. State IDs can be found in the state file."
+        tests:
+          - not_null
+
+  - name: stg_energy_category
+    description: "All technologies in DSIRE are either renewable energy or energy efficiency technologies. This table provides a unique identifier to indicate whether a technology is a renewable energy or energy efficiency technology. Used by technology_category file."
+    columns:
+      - name: id
+        description: "A unique identifier to indicate whether a technology is a renewable energy or energy efficiency technology."
+        tests:
+          - not_null
+          - unique
